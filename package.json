@@ -1,0 +1,23 @@
+{
+  "name": "mcare-admin-ui-v2",
+  "version": "1.0.0",
+  "engines": {
+    "node" : "16.12.0",
+    "npm" : "8.1.0"
+  },
+  "scripts": {
+    "dev": "nuxt --dotenv .env.dev",
+    "stage": "nuxt --dotenv .env.stage",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "start": "nuxt start --dotenv .env.real"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/proxy": "^2.1.0",
+    "apexcharts": "^3.40.0",
+    "axios": "^0.21.1",
+    "element-ui": "^2.15.13",
+    "nuxt": "^2.15.2"
+  }
+}
