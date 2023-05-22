@@ -14,13 +14,24 @@
         </el-option>
       </el-select>
     </el-form-item>
-    
-    <el-form-item label="통합관리자(mcare) 계정" prop="username">
+    <el-form-item label="권한" prop="roles">
+      <el-select v-model="formData.roles" 
+        value-key="id"
+        multiple filterable placeholder="관리자 권한을 선택하세요.">
+        <el-option
+          v-for="item in roles"
+          :key="item.id"
+          :label="item.name"
+          :value="item">
+        </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="통합관리자계정" prop="username">
       <el-input v-model="formData.username">
         <template slot="prepend">@</template>
       </el-input>
     </el-form-item>
-    <el-form-item label="통합관리자(mcare) 사용자 이름" prop="fullname">
+    <el-form-item label="통합관리자 사용자 이름" prop="fullname">
       <el-input v-model="formData.fullname"></el-input>
     </el-form-item>
     
@@ -43,45 +54,37 @@ export default {
       },
       ruleCreate : {
         hospitalCd: [{required : true, message: '대상 병원은 필수 입니다.', trigger: 'change'}],
+        roles: [{required : true, message: '관리자 권한은 필수 입니다.', trigger: 'change'}],
         username: [{required : true, message: '계정은 필수 입니다.', trigger: 'blur'}],
         fullname: [{required : true, message: '사용자 이름은 필수 입니다.', trigger: 'blur'}],
       },
-      // hospitals : []
     }
   },
   computed:{
     ...mapGetters({
       hospitals : 'getHospitals',
-    })
+      roles : 'getRoles',
+    }),
   },
   async fetch(){
-    // this.$customAxios(this.$apis.get_hospitals_v2, {}, this.setHospitalList);
     await this.$store.dispatch('loadHospitals');
-  },
-  created(){
-    // 권한 조회
-    // this.$axios.get('/apis/admin/api/roles/v1', this.formData)
-    // .then((response)=> {
-    //   console.log(response);
-    // })
-    // .catch((error)=> {
-    //   console.error(error);
-    // });
-    // this.$customAxios(this.$apis.get_hospitals_v2, (response) => {
-    //   console.log('전체 병원 정보 조회', response);
-    //   // this.hospitals = response;
-    // });
+    await this.$store.dispatch('loadRoles');
   },
   methods: {
     createAdmin(){
       this.$refs.form.validate((valid) => {
         if (!valid){
-          console.error('유효성검사 오류');
+          // console.error('유효성검사 오류');
+          this.$message.error('필수 정보를 입력해 주세요.');
           return false;
         }
-        console.log('ok', this.formData);
-        this.$customHeaderAxios(this.$apis.post_admins_v2, this.formData, (response) => {
-          console.log('done');
+        
+        this.$customAxios(this.$apis.post_admins_v2, this.formData, (response) => {
+          this.$message({
+            message: '통합관리자 계정을 등록 하였습니다.',
+            type: 'success'
+          });
+          this.$refs['form'].resetFields();
         });
       });
     }
