@@ -9,18 +9,19 @@ export default function ({$axios}, inject) {
    * @returns 
    */
   const customAxios = (api, param, callback, callbackParam) => {
-    
+
     const axiosConfig = {
       method: api['method'] ? api['method'] : 'GET',
-      url: api.url,
       data: param ? {...param} : {}
     };
-
+    
     if (!api['url']){
       console.error('unknown API.');
       $nuxt.$message.error(`unknown API.`);
       return false;
     }
+    
+    axiosConfig.url = generateUrl(api.url, param);
 
     if (api['isHeader']){
       if (!param['hospitalCd']){
@@ -38,10 +39,54 @@ export default function ({$axios}, inject) {
         callback(response.data, callbackParam);
       }
     }).catch((error) => {
-      $nuxt.$message.error(`${error} ${error.config.url}`);
+      $nuxt.$message.error(`${error}`);
     });
   }
   
+  /**
+   * 공통 axios - no Content-Type
+   * @param {Obect} api 
+   * @param {Obect} param 
+   * @param {Function} callback 
+   * @param {*} callbackParam 
+   * @returns 
+   */
+  const noContentTypeAxios = (api, param, callback, callbackParam) => {
+
+    const axiosConfig = {
+      'Content-Type' : '',
+      method: api['method'] ? api['method'] : 'GET',
+      data: param ? {...param} : {}
+    };
+    
+    if (!api['url']){
+      console.error('unknown API.');
+      $nuxt.$message.error(`unknown API.`);
+      return false;
+    }
+    
+    axiosConfig.url = generateUrl(api.url, param);
+
+    if (api['isHeader']){
+      if (!param['hospitalCd']){
+        console.error('Bad Request.');
+        $nuxt.$message.error(`Bad Request.`);
+        return false;
+      }
+      axiosConfig.headers = {
+        'hospitalCd': param.hospitalCd,
+      };
+    }
+
+    $axios(axiosConfig).then((response) => {
+      if (response && callback){
+        callback(response.data, callbackParam);
+      }
+    }).catch((error) => {
+      $nuxt.$message.error(`${error}`);
+    });
+  }
+
   /**
    * 1개 API에 param.length 만큼 axios 요청 - with header
    * @param {Obect} api 
@@ -75,13 +120,34 @@ export default function ({$axios}, inject) {
             }
           })
           .catch(error => {
-            if (callback){
-              callback(error, callbackParam);
-            }
+            $nuxt.$message.error(`${error}`);
           });
     })(requests);
   }
 
+  const generateUrl = (url, param) => {
+    try {
+      let re = /{(.*?)}/gm;
+      let matchItem = url.match(re); // {} 내용을 얻어온다
+      if (matchItem == null) {
+          return url;
+      }
+      matchItem.forEach((d, i) => { // {} 안에 있는 값을 뽑아온다
+        matchItem[i] = d.replace(/\{|\}/gi, '');
+        url = url.replace(new RegExp('\\{'+matchItem[i]+'\\}','gi'), function(value){
+            let check = value.replace(/\{|\}/gi,'');
+            return param[check];
+        });
+      });
+
+      return url;
+    } catch(error) {
+      $nuxt.$message.error(`${error}`);
+    }
+
+  }
+
   inject('customAxios', customAxios);
+  inject('noContentTypeAxios', noContentTypeAxios);
   inject('customHeaderAxiosAll', customHeaderAxiosAll);
 }

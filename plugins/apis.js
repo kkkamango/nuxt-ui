@@ -11,7 +11,7 @@ const restApis = {
   // 병원정보
   get_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2', method : 'GET', isHeader : false, test: '/sample_data/get_hospitals_v2.json'},
   post_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2', method : 'POST', isHeader : false},
-  // put /admin-api/api/hospitals/v1/{hospitalCd} (권한 없는 API 필요)
+  put_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2/{hospitalCd}', method : 'PUT', isHeader : false},
   
   // 그룹정보
   get_groups : {url : mcareServer.admin + '/api/admins/groups/v2', method : 'GET', isHeader : false},
@@ -30,7 +30,7 @@ const restApis = {
   // 관리자
   // 관리자 > 권한
   get_admins_role_v2 : {url : mcareServer.admin + '/api/roles/v2', method : 'GET', isHeader : false},
-  get_admins_search_v3 : {url : mcareServer.admin + '/api/admins/v3/search', method : 'GET', isHeader : true},
+  get_admins_search_v3 : {url : mcareServer.admin + '/api/admins/v3/search?size={size}&page={page}&roleTypes={roleTypes}&searchName=', method : 'GET', isHeader : true},
   post_admins_v2 : {url : mcareServer.admin + '/api/admins/v2', method : 'POST', isHeader : true},
   put_admins_v2 : {url : mcareServer.admin + '/api/admins/v2/{id}', method : 'PUT', isHeader : true},
   put_admins_resetPw_v2 : {url : mcareServer.admin + '/api/admins/resetPassword/v2/{id}', method : 'PUT', isHeader : true},

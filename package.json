@@ -9,7 +9,7 @@
     "dev": "nuxt --dotenv .env.dev",
     "stage": "nuxt --dotenv .env.stage",
     "build": "nuxt build",
-    "generate": "nuxt generate",
+    "generate": "nuxt generate --dotenv .env.dev",
     "start": "nuxt start --dotenv .env.real"
   },
   "dependencies": {

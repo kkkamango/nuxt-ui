@@ -130,6 +130,7 @@ export default {
             message: '병원을 등록 하였습니다.',
             type: 'success'
           });
+          this.drawerForm = false;
           this.reloadHospitals(); // 변경된 병원정보 갱신
         });
       });
@@ -141,11 +142,15 @@ export default {
           console.error('유효성검사 오류');
           return false;
         }
-        console.error('병원 수정 API 필요');
-        // TODO 병원 수정
-        // this.$customAxios(this.$apis.post_hospitals_v2, this.formCreateHospital, (response) => {
-        //   console.log('done');
-        // });
+        
+        this.$customAxios(this.$apis.put_hospitals_v2, this.formCreateHospital, (response) => {
+          this.$message({
+            message: '병원을 수정 하였습니다.',
+            type: 'success'
+          });
+          this.drawerForm = false;
+          this.reloadHospitals(); // 변경된 병원정보 갱신
+        });
       });
     },
     // 수정 form 이벤트
@@ -153,7 +158,6 @@ export default {
       this.formCreateMode = false;
 
       Object.keys(d).forEach(key => {
-        console.log(key, d[key]);
         this.formCreateHospital[key] = d[key];
       });
       this.drawerForm = true;
@@ -163,6 +167,7 @@ export default {
     }),
     // drawer 이벤트
     handleOpenDrawer(){
+      console.log(process.env);
       if (this.$refs['form']){
         this.$refs['form'].resetFields();
       }
