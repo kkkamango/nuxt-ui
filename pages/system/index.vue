@@ -3,7 +3,7 @@
     <h1>병원 기본 정보 관리</h1>
     <el-row>
       <el-col>
-        <el-button @click="handleOpenDrawer" type="primary">등록</el-button>
+        <el-button @click="handleEdit" type="primary">등록</el-button>
       </el-col>
     </el-row>
     <el-row class="last">
@@ -39,42 +39,38 @@
         :visible.sync="drawerForm" direction="rtl" :before-close="handleDrawer" size="50%">
       <el-row>
         <el-col :span="20" :offset="2">
-          <el-form :model="formCreateHospital" :rules="ruleCreate" ref="form" label-width="30%">
+          <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">
             <el-form-item label="병원코드" prop="hospitalCd">
-              <el-input v-model="formCreateHospital.hospitalCd"></el-input>
+              <el-input v-model="formData.hospitalCd"></el-input>
             </el-form-item>
             <el-form-item label="병원이름" prop="hospitalNm">
-              <el-input v-model="formCreateHospital.hospitalNm"></el-input>
+              <el-input v-model="formData.hospitalNm"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="멀티병원 이름" prop="prefix">
-              <el-input v-model="formCreateHospital.prefix"></el-input>
-            </el-form-item> -->
             <el-form-item label="URL" prop="url">
-              <el-input v-model="formCreateHospital.url" placeholder="http://wwww.hospital.kr">
+              <el-input v-model="formData.url" placeholder="http://wwww.hospital.kr">
                 <template slot="prepend">http://</template>
               </el-input>
             </el-form-item>
-            <!-- <el-form-item label="Push Key" prop="accKey">
-              <el-input v-model="formCreateHospital.accKey"></el-input>
-            </el-form-item> -->
+            <el-form-item label="병원 이미지" prop="imgUrl">
+              <el-input v-model="formData.imgUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="검색 키워드" prop="keyword">
+              <el-input v-model="formData.keyword"></el-input>
+            </el-form-item>
+            <el-form-item label="Push Key" prop="accKey">
+              <el-input v-model="formData.accKey" readonly placeholder="등록시 자동으로 생성됩니다."></el-input>
+            </el-form-item>
             <el-form-item label="사용여부" prop="enabled">
-              <el-switch v-model="formCreateHospital.enabled"
+              <el-switch v-model="formData.enabled"
                 active-text="사용" inactive-text="미사용">
               </el-switch>
             </el-form-item>
-            <!-- <el-form-item label="통합계정 사용여부" prop="sso_yn">
-              <el-switch v-model="formCreateHospital.sso_yn"
-                active-text="사용" inactive-text="미사용">
-              </el-switch>
-            </el-form-item> -->
-        
           </el-form>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="20" :offset="2">
-          <el-button @click="createHospital" type="primary" v-if="formCreateMode">병원생성</el-button>
-          <el-button @click="updateHospital" type="primary" v-if="!formCreateMode">병원수정</el-button>
+          <el-button @click="createHospital" type="primary">{{formCreateMode ? '병원생성' : '병원수정'}}</el-button>
         </el-col>
       </el-row>
     </el-drawer>
@@ -89,19 +85,24 @@ export default {
   name : 'hospitalManageVue',
   data(){
     return {
-      // hospitalList : [],
       formCreateMode : true, // true:등록, false:수정
-      formCreateHospital : {
+      formData : {
         hospitalNm : '',
         hospitalCd : '',
         url : '',
+        imgUrl : '',
+        keyword : '',
+        accKey : '',
         enabled : true,
         sso_yn : false,
       },
       ruleCreate : {
         hospitalNm: [{required : true, message: '병원이름은 필수 입니다.', trigger: 'blur'}],
         hospitalCd: [{required : true, message: '병원코드은 필수 입니다.', trigger: 'blur'}],
-        url: [{required : true, message: 'URL은 필수 입니다.', trigger: 'blur'}], // url 패턴 추가(pattern:/\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*/,)
+        url: [{required : true, message: 'URL은 필수 입니다.', trigger: 'blur'},
+              {max:50, message: '최대 50자 까지 입력할 수 있습니다.', trigger: 'blur'}], // url 패턴 추가(pattern:/\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*/,)
+        imgUrl: [{max:1000, message: '최대 1000자 까지 입력할 수 있습니다.', trigger: 'blur'}],
+        keyword: [{max:2000, message: '최대 2000자 까지 입력할 수 있습니다.', trigger: 'blur'}],
       },
       drawerForm : false,
     }
@@ -112,70 +113,57 @@ export default {
     })
   },
   async fetch(){
-    // this.$customAxios(this.$apis.get_hospitals_v2, {}, this.setHospitalList);
     await this.$store.dispatch('loadHospitals');
   },
   methods: {
     createHospital(){
-      this.formCreateMode = true;
 
       this.$refs.form.validate((valid) => {
         if (!valid){
-          console.error('유효성검사 오류');
+          this.$message.error('필수 정보를 입력해 주세요.');
           return false;
         }
 
-        this.$customAxios(this.$apis.post_hospitals_v2, this.formCreateHospital, (response) => {
-          this.$message({
-            message: '병원을 등록 하였습니다.',
-            type: 'success'
-          });
-          this.drawerForm = false;
-          this.reloadHospitals(); // 변경된 병원정보 갱신
-        });
+        this.$customAxios(this.formCreateMode ? this.$apis.post_hospitals_v2 : this.$apis.put_hospitals_v2, 
+          {...this.formData}, 
+          this.respAction);
       });
     },
-    updateHospital(){
-
-      this.$refs.form.validate((valid) => {
-        if (!valid){
-          console.error('유효성검사 오류');
-          return false;
-        }
-        
-        this.$customAxios(this.$apis.put_hospitals_v2, this.formCreateHospital, (response) => {
-          this.$message({
-            message: '병원을 수정 하였습니다.',
-            type: 'success'
-          });
-          this.drawerForm = false;
-          this.reloadHospitals(); // 변경된 병원정보 갱신
-        });
+    // 수정 form 완료 이벤트
+    respAction(response){
+      this.$message({
+        message: this.formCreateMode ? '병원을 등록 하였습니다.' :'병원을 수정 하였습니다.',
+        type: 'success'
       });
-    },
-    // 수정 form 이벤트
-    handleEdit(i, d){
-      this.formCreateMode = false;
 
-      Object.keys(d).forEach(key => {
-        this.formCreateHospital[key] = d[key];
-      });
-      this.drawerForm = true;
+      this.$refs['form'].resetFields();
+      this.reloadHospitals(); // 변경된 병원정보 갱신
+      this.drawerForm = false;
     },
     ...mapActions({
       reloadHospitals : 'reloadHospitals'
     }),
-    // drawer 이벤트
-    handleOpenDrawer(){
-      console.log(process.env);
-      if (this.$refs['form']){
-        this.$refs['form'].resetFields();
+    // 수정 form 이벤트
+    handleEdit(i, d){
+      if (d){
+        Object.keys(d).forEach(key => {
+          this.formData[key] = d[key];
+        });
+        // this.formData['originCd'] = d.hospitalCd; // 병원코드 수정할 경우 사용
+        this.formCreateMode = false;
+      } else {
+        if (this.$refs['form']){
+          this.$refs['form'].resetFields();
+        }
+        this.formCreateMode = true;
       }
 
       this.drawerForm = true;
     },
     handleDrawer(close){
-      this.$refs['form'].resetFields();
+      this.$nextTick(() => {
+        this.$refs['form'].resetFields();
+      });
       close();
     }
   }

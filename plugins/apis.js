@@ -1,6 +1,6 @@
 const mcareServer = {
-  admin : '/apis/admin',
-  // pay : '/apis/pay',
+  admin : '/admin-api',
+  // pay : '/pay-api',
 }
 /**
  * API 모음
@@ -11,12 +11,12 @@ const restApis = {
   // 병원정보
   get_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2', method : 'GET', isHeader : false, test: '/sample_data/get_hospitals_v2.json'},
   post_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2', method : 'POST', isHeader : false},
-  put_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2/{hospitalCd}', method : 'PUT', isHeader : false},
+  put_hospitals_v2 : {url : mcareServer.admin + '/api/hospitals/v2/{originCd}', method : 'PUT', isHeader : false},
   
   // 그룹정보
   get_groups : {url : mcareServer.admin + '/api/admins/groups/v2', method : 'GET', isHeader : false},
   post_group_v2 : {url : mcareServer.admin + '/api/group/v2', method : 'POST', isHeader : false},
-  put_group_v2 : {url : mcareServer.admin + '/api/group/v2/{groupCd}', method : 'POST', isHeader : false},
+  put_group_v2 : {url : mcareServer.admin + '/api/group/v2/{originCd}', method : 'put', isHeader : false},
   // 그룹 병원 매핑
   get_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v2', method : 'GET', isHeader : false},
   post_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v2', method : 'POST', isHeader : false},

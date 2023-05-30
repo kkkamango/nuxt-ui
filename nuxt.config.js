@@ -1,23 +1,10 @@
-// import path from 'path'
-// import fs from 'fs'
-
-require('dotenv').config()
-
 export default {
   ssr: false,
   target: 'static',
-  // env: {
-  //   API_ADMIN: process.env.API_ADMIN,
-  // },
   router: {
     base : '/admin-ui-v2/'
   },
   server: {
-    // https: {
-    //   key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
-    //   cert: fs.readFileSync(path.resolve(__dirname, 'server.crt'))
-    // }
-    // host: process.env.HOST,
     // port: 8080,
   },
   head: {
@@ -28,15 +15,12 @@ export default {
     ]
   },
   publicRuntimeConfig :{
-    // axios: {
-    //   browserBaseURL: process.env.BROWSER_BASE_URL,
-    // },
     API_PAY : process.env.API_PAY,
     TEST : 'BAD'
   },
-  // buildModules: [
-  //   // ['@nuxtjs/dotenv', {filename: `.env.${process.env.NODE_ENV}`}],
-  // ],
+  buildModules: [
+    ['@nuxtjs/dotenv', {filename: `.env.${process.env.NODE_ENV}`}],
+  ],
   modules: ['@nuxtjs/axios', '@nuxtjs/proxy'],
   axios: {
     // baseURL : '',
@@ -44,17 +28,15 @@ export default {
     proxy: true,
   },
   proxy: {
-    '/apis/admin': {
+    '/admin-api': {
       target : process.env.API_ADMIN,
-      // target : 'https://common-dev.lemonhc.com:8031/admin-api',
       changeOrigin : true,
-      pathRewrite : {'^/apis/admin' : ''}
+      pathRewrite : {'^/admin-api' : ''}
     },
-    '/apis/pay': {
+    '/apis/pay': { // 배포환경에 nginx proxy_pass 추가해야 함
       target : process.env.API_PAY,
-      // target : 'https://common-dev.lemonhc.com:8031/admin-api',
       changeOrigin : true,
-      pathRewrite : {'^/apis/pay' : ''}
+      pathRewrite : {'^/pay-api' : ''}
     },
   },
   plugins: [
