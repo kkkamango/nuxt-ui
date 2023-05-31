@@ -62,12 +62,12 @@
         :total="totalElements">
       </el-pagination>
     </el-row>
-    <el-drawer :title="formCreateMode ? '신규 병원 관리자 등록' : '신규 병원 관리자 수정'" 
+    <el-drawer :title="formCreateMode ? '통합 관리자 등록' : '통합 관리자 수정'" 
         :visible.sync="drawerForm" direction="rtl" :before-close="handleDrawer" size="50%">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">
-            <el-form-item label="대상 병원" prop="hospitalCd">
+            <el-form-item label="대상 DB" prop="hospitalCd">
               <el-select v-if="formCreateMode" 
                 v-model="formData.hospitalCd" filterable 
                 no-data-text="병원 정보 조회 실패" placeholder="병원을 선택하세요.">
@@ -99,8 +99,43 @@
                 <template slot="prepend">@</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="관리자 사용자 이름" prop="fullname">
+            <el-form-item label="관리자 이름" prop="fullname">
               <el-input v-model="formData.fullname"></el-input>
+            </el-form-item>
+            <el-form-item label="사용여부" prop="enabled">
+              <el-switch v-model="formData.enabled"
+                active-text="사용" inactive-text="탈퇴">
+              </el-switch>
+            </el-form-item>
+
+            <el-form-item label="누적 로그인 실패수">
+              <el-row type="flex" justify="space-between">
+                <el-col :span="6">
+                  {{ formData.passwordRetryCount }}
+                </el-col>
+                <el-col :span="6">
+                  <el-button v-if="formData.passwordRetryCount > 0" 
+                    @click="resetPasswordRetryCount(formData)"
+                    type="info" plain>초기화</el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item label="비밀번호 초기화일">
+              <el-row type="flex" justify="space-between">
+                <el-col :span="6">
+                  {{ formData.lastPasswordResetDatetime }}
+                </el-col>
+                <el-col :span="9">
+                  <el-button @click="resetLastPasswordResetDate(formData)"
+                    type="info" plain>비밀번호 변경일시 초기화</el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item label="생성일">
+              {{formData.createDatetime}}
+            </el-form-item>
+            <el-form-item label="수정일">
+              {{ formData.updateDatetime }}
             </el-form-item>
           </el-form>
         </el-col>
@@ -129,8 +164,13 @@ export default {
         hospitalCd : '',
         username : '', // account@email.com
         fullname : '',
-        enabled : true,
+        enabled : true, // => 탈퇴
         roles : [],
+        passwordRetryCount : 0,// 누적 로그인 실패수 -> 초기화
+        accountNonLocked : false, // 계정 잠김여부
+        lastPasswordResetDatetime : '',// 비밀번호 초기화일 -> 비밀번호 변경일시 초기화
+        createDatetime : '',// 생성일
+        updateDatetime : '',// 수정일
       },
       ruleCreate : {
         hospitalCd: [{required : true, message: '대상 병원은 필수 입니다.', trigger: 'change'}],
@@ -194,6 +234,7 @@ export default {
     },
     // 수정 form 이벤트
     handleEdit(i, d){
+      console.debug(d);
       if (d){
         Object.keys(d).forEach(key => {
           this.formData[key] = d[key];
@@ -201,15 +242,31 @@ export default {
         this.formCreateMode = false;
       } else {
         if (this.$refs['form']){
+          console.debug('reset');
           this.$refs['form'].resetFields();
         }
         this.formCreateMode = true;
       }
-
+      
+      this.formData.hospitalCd = this.targetHospital.hospitalCd;
       this.drawerForm = true;
+    },
+    // 누적 로그인 실패수 -> 초기화
+    resetPasswordRetryCount(data){
+      const param = {...this.formData};
+      param.passwordRetryCount = 0;
+      param.accountNonLocked = false;
+      this.$customAxios(this.$apis.put_admins_v2, param, this.respAction);
+    },
+    // 비밀번호 변경일시 초기화
+    resetLastPasswordResetDate(data){
+      const param = {...this.formData};
+      param.lastPasswordResetDatetime = '';
+      this.$customAxios(this.$apis.put_admins_v2, param, this.respAction);
     },
     handleDrawer(close){
       this.$nextTick(() => {
+        console.debug('reset');
         this.$refs['form'].resetFields();
       });
       close();

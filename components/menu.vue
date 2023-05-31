@@ -23,7 +23,7 @@
         </template>
         <el-menu-item index="/system">병원 기본 정보 관리</el-menu-item>
         <el-menu-item index="/system/group">병원 그룹 관리</el-menu-item>
-        <el-menu-item index="/system/superAdmin">신규 병원 관리자 생성</el-menu-item>
+        <el-menu-item index="/system/superAdmin">통합 관리자 생성</el-menu-item>
         <el-menu-item index="/system/redis">Redis 캐시 초기화</el-menu-item>        
       </el-submenu>
     </el-menu>
