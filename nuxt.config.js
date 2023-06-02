@@ -8,7 +8,7 @@ export default {
     // port: 8080,
   },
   head: {
-    titleTemplate: 'LemonCare Admin v2',
+    titleTemplate: 'LemonCare Admin 4.0 v2',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -21,7 +21,7 @@ export default {
   buildModules: [
     ['@nuxtjs/dotenv', {filename: `.env.${process.env.NODE_ENV}`}],
   ],
-  modules: ['@nuxtjs/axios', '@nuxtjs/proxy'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '@nuxtjs/dayjs' ],
   axios: {
     // baseURL : '',
     credentials : true,
@@ -48,4 +48,9 @@ export default {
     'element-ui/lib/theme-chalk/index.css',
     '~/assets/default.css'
   ],
+  // dayjs :{
+  //   locales: ['ko'],
+  //   defaultLocale: 'ko',
+  //   defaultTimeZone: 'Asia/Tokyo',
+  // }
 }

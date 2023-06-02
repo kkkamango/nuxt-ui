@@ -23,16 +23,23 @@
         <el-table-column
           fixed="right"
           label="관리"
-          width="120">
+          width="200">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">관리</el-button>
+              @click="handleEdit('group', scope.row)">관리</el-button>
+            <!-- <el-button
+              size="mini"
+              @click="handleEdit('group_hospitals', scope.row)">그룹병원 관리</el-button> -->
           </template>
         </el-table-column>
       </el-table>
     </el-row>
-    <el-drawer :title="formCreateMode ? '병원 그룹 등록' : '병원 그룹 수정'" 
+    <!--//end 목록 -->
+
+    <!-- 그룹관리 -->
+    <el-drawer v-if="!formHospitalMode"
+        :title="formCreateMode ? '그룹 등록' : '그룹 수정'" 
         :visible.sync="drawerForm" direction="rtl" :before-close="handleDrawer" size="50%">
       <el-row>
         <el-col :span="20" :offset="2">
@@ -79,12 +86,58 @@
         <el-col :span="20" :offset="2">
           <el-button @click="createGroup" type="primary">{{formCreateMode ? '그룹생성' : '그룹수정'}}</el-button>
         </el-col>
-      </el-row>
+      </el-row>  
     </el-drawer>
+    <!--//end 그룹관리 -->
+    
+    <!-- 그룹병원 관리 -->
+    <el-drawer v-else title="그룹병원 관리" 
+        :visible.sync="drawerForm" direction="rtl" :before-close="handleDrawer" size="70%">
+        <GroupHospitalsVue :groupCd="formData.groupCd"/>
+      <!-- <el-row>
+        <el-col :span="20" :offset="2">
+          <el-form :model="formHospitalData" :rules="ruleCreate" ref="form" label-width="30%">
+            <el-form-item label="순서" prop="seq">
+              <el-input v-model="formHospitalData.seq"></el-input>
+            </el-form-item>
+            <el-form-item label="병원이미지" prop="groupHospitalImg">
+              <el-input v-model="formHospitalData.groupHospitalImg"></el-input>
+            </el-form-item>
+            <el-form-item label="사용여부" prop="enabled">
+              <el-switch v-model="formHospitalData.enabled"
+                active-text="사용" inactive-text="미사용">
+              </el-switch>
+            </el-form-item>
+            <el-form-item label="그룹병원" prop="hospital">
+              <el-select v-model="formHospitalData.hospital" 
+                value-key="hospitalCd"
+                multiple filterable placeholder="그룹에 추가할 병원을 선택하세요.">
+                <el-option
+                  v-for="item in hospitalList"
+                  :key="item.hospitalCd"
+                  :label="item.hospitalNm"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            
+          </el-form>
+        </el-col>
+      </el-row> -->
+
+      <!-- <el-row>
+        <el-col :span="20" :offset="2">
+          <el-button @click="createGroupHospital" type="primary">그룹병원 수정</el-button>
+        </el-col>
+      </el-row> -->
+    </el-drawer>
+    <!--//end 그룹병원 관리 -->
   </div>
 </template>
 
 <script>
+import GroupHospitalsVue from '../../components/system/groupHospitals.vue';
+
 export default {
   name : 'groupManageVue',
   data(){
@@ -98,6 +151,7 @@ export default {
         description : '',
         hospitals : [],
       },
+      formHospitalData : [], // 그룹병원 관리
       ruleCreate : {
         groupCd: [{required : true, message: '그룹코드는 필수 입니다.', trigger: 'blur'}],
         groupNm: [{required : true, message: '그룹이름은 필수 입니다.', trigger: 'blur'}],
@@ -106,10 +160,13 @@ export default {
         description: [{max:1000, message: '최대 1000자 까지 입력할 수 있습니다.', trigger: 'blur'}],
       },
       groupList : [],
+      // groupHospitalList : [], // 그룹 하위 병원 목록
       formCreateMode : true, // true:등록, false:수정
+      formHospitalMode : false, // true:그룹병원 관리, false:그룹 관리
       drawerForm : false,
     }
   },
+  components : {GroupHospitalsVue},
   created(){
     this.getGroupList();
   },
@@ -142,25 +199,46 @@ export default {
     setGroupList(response){
       this.groupList = response.body && Array.isArray(response.body) ? response.body : [];
     },
+    // setGroupHospitalList(response){
+    //   this.groupHospitalList = response && Array.isArray(response) ? response : [];
+    // },
+    // 그룹병원 수정
+    createGroupHospital(){
+      //post_group_hospitals_v2 delete_group_hospitals_v2
+      console.debug('createGroupHospital', JSON.stringify(this.formHospitalData));
+    },
     // 수정 form 이벤트
-    handleEdit(i, d){
-      if (d){
-        Object.keys(d).forEach(key => {
-          this.formData[key] = d[key];
-        });
-        this.formCreateMode = false;
-      } else {
-        if (this.$refs['form']){
-          this.$refs['form'].resetFields();
+    handleEdit(cd, d){
+      this.formHospitalMode = cd !== 'group';
+
+      // if (!this.formHospitalMode){
+
+        if (d){
+          Object.keys(d).forEach(key => {
+            this.formData[key] = d[key];
+          });
+          this.formCreateMode = false;
+  
+          // if (this.formHospitalMode){
+          //   // TODO 그룹병원 관리
+          //   console.debug(d)
+          //   this.$customAxios(this.$apis.get_group_hospitals_v2, {groupCd : d.groupCd}, this.setGroupHospitalList);
+          // }
+        } else {
+          if (this.$refs['form']){
+            this.$refs['form'].resetFields();
+          }
+          this.formCreateMode = true;
         }
-        this.formCreateMode = true;
-      }
+      // }
       
       this.drawerForm = true;
     },
     handleDrawer(close){
       this.$nextTick(() => {
-        this.$refs['form'].resetFields();
+        if (this.$refs['form']){
+          this.$refs['form'].resetFields();
+        }
       });
       close();
     },

@@ -18,6 +18,13 @@
               disable-transitions>{{scope.row.enabled ? '사용' : '미사용'}}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="sso_yn" label="Data Source 생성여부" width="150">
+          <template slot-scope="scope">
+            <el-tag
+              :type="scope.row.sso_yn ? 'primary' : 'danger'"
+              disable-transitions>{{scope.row.enabled ? '생성' : '생성전'}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           label="관리"
@@ -63,6 +70,11 @@
             <el-form-item label="사용여부" prop="enabled">
               <el-switch v-model="formData.enabled"
                 active-text="사용" inactive-text="미사용">
+              </el-switch>
+            </el-form-item>
+            <el-form-item label="Data Source 생성여부" prop="sso_yn">
+              <el-switch v-model="formData.enabled"
+                active-text="생성" inactive-text="생성전">
               </el-switch>
             </el-form-item>
           </el-form>

@@ -18,9 +18,9 @@ const restApis = {
   post_group_v2 : {url : mcareServer.admin + '/api/group/v2', method : 'POST', isHeader : false},
   put_group_v2 : {url : mcareServer.admin + '/api/group/v2/{groupCd}', method : 'put', isHeader : false},
   // 그룹 병원 매핑
-  get_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v2', method : 'GET', isHeader : false},
-  post_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v2', method : 'POST', isHeader : false},
-  delete_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v2', method : 'DELETE', isHeader : false},
+  get_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v1?groupCd={groupCd}', method : 'GET', isHeader : false},
+  post_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v1', method : 'POST', isHeader : false},
+  delete_group_hospitals_v2 : {url : mcareServer.admin + '/api/group/hospitals/v1', method : 'DELETE', isHeader : false},
 
   // Redis Cache 
   post_menutrees_initCache_v2 : {url : mcareServer.admin + '/api/menutrees/v2/initCache', method : 'POST', isHeader : true},

@@ -107,36 +107,38 @@
                 active-text="사용" inactive-text="탈퇴">
               </el-switch>
             </el-form-item>
-
-            <el-form-item label="누적 로그인 실패수">
-              <el-row type="flex" justify="space-between">
-                <el-col :span="6">
-                  {{ formData.passwordRetryCount }}
-                </el-col>
-                <el-col :span="6">
-                  <el-button v-if="formData.passwordRetryCount > 0" 
-                    @click="resetPasswordRetryCount(formData)"
-                    type="info" plain>초기화</el-button>
-                </el-col>
-              </el-row>
-            </el-form-item>
-            <el-form-item label="비밀번호 초기화일">
-              <el-row type="flex" justify="space-between">
-                <el-col :span="6">
-                  {{ formData.lastPasswordResetDatetime }}
-                </el-col>
-                <el-col :span="9">
-                  <el-button @click="resetLastPasswordResetDate(formData)"
-                    type="info" plain>비밀번호 변경일시 초기화</el-button>
-                </el-col>
-              </el-row>
-            </el-form-item>
-            <el-form-item label="생성일">
-              {{formData.createDatetime}}
-            </el-form-item>
-            <el-form-item label="수정일">
-              {{ formData.updateDatetime }}
-            </el-form-item>
+            
+            <template v-if="!formCreateMode">
+              <el-form-item label="누적 로그인 실패수">
+                <el-row type="flex">
+                  <el-col :span="12">
+                    {{ formData.passwordRetryCount }}
+                  </el-col>
+                  <el-col :span="12">
+                    <el-button v-if="formData.passwordRetryCount > 0" 
+                      @click="resetPasswordRetryCount(formData)"
+                      type="info" plain>초기화</el-button>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+              <el-form-item label="비밀번호 초기화">
+                <el-row type="flex">
+                  <el-col :span="12">
+                    {{ formData.lastPasswordResetDatetime }}
+                  </el-col>
+                  <el-col :span="12">
+                    <el-button @click="resetPassword(formData)"
+                      type="info" plain>비밀번호 초기화</el-button>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+              <el-form-item label="생성일">
+                {{formData.createDatetime}}
+              </el-form-item>
+              <el-form-item label="수정일">
+                {{ formData.updateDatetime }}
+              </el-form-item>
+            </template>
           </el-form>
         </el-col>
       </el-row>
@@ -152,6 +154,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+
 export default {
   name: 'superAdminVue',
   data(){
@@ -167,7 +170,7 @@ export default {
         enabled : true, // => 탈퇴
         roles : [],
         passwordRetryCount : 0,// 누적 로그인 실패수 -> 초기화
-        accountNonLocked : false, // 계정 잠김여부
+        accountNonLocked : false, // 계정 잠김여부(잠김=true, 정상=false)
         lastPasswordResetDatetime : '',// 비밀번호 초기화일 -> 비밀번호 변경일시 초기화
         createDatetime : '',// 생성일
         updateDatetime : '',// 수정일
@@ -234,13 +237,18 @@ export default {
     },
     // 수정 form 이벤트
     handleEdit(i, d){
-      console.debug(d);
+      // console.debug(Boolean(d));
       if (d){
         Object.keys(d).forEach(key => {
           this.formData[key] = d[key];
         });
         this.formCreateMode = false;
       } else {
+        // 등록시 DB 생성 여부 체크
+        if (!this.targetHospital.sso_yn){
+          this.$message.error('Data Source 생성 후 -> 접속정보 추가 -> 서버 재기동 후 계정을 추가할 수 있습니다.');
+          return false;
+        }
         if (this.$refs['form']){
           console.debug('reset');
           this.$refs['form'].resetFields();
@@ -256,17 +264,19 @@ export default {
       const param = {...this.formData};
       param.passwordRetryCount = 0;
       param.accountNonLocked = false;
+      debugger;
       this.$customAxios(this.$apis.put_admins_v2, param, this.respAction);
     },
-    // 비밀번호 변경일시 초기화
-    resetLastPasswordResetDate(data){
+    // 비밀번호 초기화
+    resetPassword(data){
       const param = {...this.formData};
-      param.lastPasswordResetDatetime = '';
-      this.$customAxios(this.$apis.put_admins_v2, param, this.respAction);
+      // const now = this.$dayjs();
+      // param.lastPasswordResetDatetime = now.format('YYYY-MM-DD');
+      this.$customAxios(this.$apis.put_admins_resetPw_v2, param, this.respAction);
     },
     handleDrawer(close){
       this.$nextTick(() => {
-        console.debug('reset');
+        // console.debug('reset');
         this.$refs['form'].resetFields();
       });
       close();
