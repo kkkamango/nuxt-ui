@@ -62,8 +62,9 @@
         :total="totalElements">
       </el-pagination>
     </el-row>
+
     <el-drawer :title="formCreateMode ? '통합 관리자 등록' : '통합 관리자 수정'" 
-        :visible.sync="drawerForm" direction="rtl" :before-close="handleDrawer" size="50%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">
@@ -109,7 +110,7 @@
             </el-form-item>
             
             <template v-if="!formCreateMode">
-              <el-form-item label="누적 로그인 실패수">
+              <el-form-item label="누적 로그인 실패수" prop="passwordRetryCount">
                 <el-row type="flex">
                   <el-col :span="12">
                     {{ formData.passwordRetryCount }}
@@ -121,7 +122,7 @@
                   </el-col>
                 </el-row>
               </el-form-item>
-              <el-form-item label="비밀번호 초기화">
+              <el-form-item label="비밀번호 초기화" prop="lastPasswordResetDatetime">
                 <el-row type="flex">
                   <el-col :span="12">
                     {{ formData.lastPasswordResetDatetime }}
@@ -132,10 +133,10 @@
                   </el-col>
                 </el-row>
               </el-form-item>
-              <el-form-item label="생성일">
+              <el-form-item label="생성일" prop="createDatetime">
                 {{formData.createDatetime}}
               </el-form-item>
-              <el-form-item label="수정일">
+              <el-form-item label="수정일" prop="updateDatetime">
                 {{ formData.updateDatetime }}
               </el-form-item>
             </template>
@@ -153,7 +154,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 
 export default {
   name: 'superAdminVue',
@@ -181,13 +182,14 @@ export default {
         username: [{required : true, message: '계정은 필수 입니다.', trigger: 'blur'}],
         fullname: [{required : true, message: '사용자 이름은 필수 입니다.', trigger: 'blur'}],
       },
-      drawerForm : false,
+      // drawerForm : false,
     }
   },
   computed:{
     ...mapGetters({
       hospitals : 'getHospitals',
       roles : 'getRoles',
+      isDrawOpen : 'isDrawOpen',
     }),
   },
   watch:{
@@ -231,14 +233,14 @@ export default {
         message: this.formCreateMode ? '통합관리자 계정을 등록 하였습니다.' : '통합관리자 계정을 수정 하였습니다.',
         type: 'success'
       });
-      this.$refs['form'].resetFields();
       this.setPage(1);
-      this.drawerForm = false;
+      this.closeDrawer();
     },
     // 수정 form 이벤트
     handleEdit(i, d){
       // console.debug(Boolean(d));
       if (d){
+        // console.debug('수정');
         Object.keys(d).forEach(key => {
           this.formData[key] = d[key];
         });
@@ -249,22 +251,17 @@ export default {
           this.$message.error('Data Source 생성 후 -> 접속정보 추가 -> 서버 재기동 후 계정을 추가할 수 있습니다.');
           return false;
         }
-        if (this.$refs['form']){
-          console.debug('reset');
-          this.$refs['form'].resetFields();
-        }
         this.formCreateMode = true;
       }
       
       this.formData.hospitalCd = this.targetHospital.hospitalCd;
-      this.drawerForm = true;
+      this.openDrawer();
     },
     // 누적 로그인 실패수 -> 초기화
     resetPasswordRetryCount(data){
       const param = {...this.formData};
       param.passwordRetryCount = 0;
       param.accountNonLocked = false;
-      debugger;
       this.$customAxios(this.$apis.put_admins_v2, param, this.respAction);
     },
     // 비밀번호 초기화
@@ -275,15 +272,15 @@ export default {
       this.$customAxios(this.$apis.put_admins_resetPw_v2, param, this.respAction);
     },
     handleDrawer(close){
-      this.$nextTick(() => {
-        // console.debug('reset');
-        this.$refs['form'].resetFields();
-      });
-      close();
+      this.formData = {};
+      this.$refs['form'].resetFields();
+      this.closeDrawer();
+      // close();
     },
     formatterRoles(row, col){ // 테이블 > 권한 표시
       return row.roles.map(d => d.name).join(', ');
     },
+    ...mapActions(['openDrawer', 'closeDrawer']),
   }
 }
 </script>

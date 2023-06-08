@@ -9,8 +9,12 @@
                 fit="fit"
             >
             </el-image>
-        </div>
-
+            <div style="top: 14px;right: 15px;position: absolute;">
+              <el-tag v-if="'dev' == $config.PROFILE" type="success">개발</el-tag>
+              <el-tag v-if="'stage' == $config.PROFILE" type="warning">QA</el-tag>
+            </div>
+          </div>
+          
     </div>
 </el-header>
 </template>

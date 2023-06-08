@@ -46,8 +46,12 @@ export default {
     requestParam(){
       return this.targetHospital.length > 0 ? this.targetHospital : this.hospitalList;
     },
+    hospitalList(){
+      // 등록시 DB 생성 여부 체크
+      return this.hospitals.filter(d => d.sso_yn);
+    },
     ...mapGetters({
-      hospitalList : 'getHospitals',
+      hospitals : 'getHospitals',
     })
   },
   async fetch(){
@@ -87,9 +91,9 @@ export default {
       this.initConfig();
       this.initAlimtalk();
     },
-    setHospitalList(response){
-      this.hospitalList = response.body ? response.body : [];
-    },
+    // setHospitalList(response){
+    //   this.hospitalList = response.body ? response.body : [];
+    // },
   }
 };
 </script>

@@ -16,7 +16,7 @@ export default {
   },
   publicRuntimeConfig :{
     API_PAY : process.env.API_PAY,
-    TEST : 'BAD'
+    PROFILE : process.env.PROFILE
   },
   buildModules: [
     ['@nuxtjs/dotenv', {filename: `.env.${process.env.NODE_ENV}`}],

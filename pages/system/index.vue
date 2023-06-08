@@ -43,7 +43,7 @@
     </el-row>
 
     <el-drawer :title="formCreateMode ? '병원 기본 정보 등록' : '병원 기본 정보 수정'" 
-        :visible.sync="drawerForm" direction="rtl" :before-close="handleDrawer" size="50%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">
@@ -73,7 +73,7 @@
               </el-switch>
             </el-form-item>
             <el-form-item label="Data Source 생성여부" prop="sso_yn">
-              <el-switch v-model="formData.enabled"
+              <el-switch v-model="formData.sso_yn"
                 active-text="생성" inactive-text="생성전">
               </el-switch>
             </el-form-item>
@@ -116,12 +116,12 @@ export default {
         imgUrl: [{max:1000, message: '최대 1000자 까지 입력할 수 있습니다.', trigger: 'blur'}],
         keyword: [{max:2000, message: '최대 2000자 까지 입력할 수 있습니다.', trigger: 'blur'}],
       },
-      drawerForm : false,
     }
   },
   computed:{
     ...mapGetters({
       hospitalList : 'getHospitals',
+      isDrawOpen : 'isDrawOpen',
     })
   },
   async fetch(){
@@ -150,11 +150,9 @@ export default {
 
       this.$refs['form'].resetFields();
       this.reloadHospitals(); // 변경된 병원정보 갱신
-      this.drawerForm = false;
+      this.closeDrawer();
     },
-    ...mapActions({
-      reloadHospitals : 'reloadHospitals'
-    }),
+    ...mapActions(['reloadHospitals', 'openDrawer', 'closeDrawer']),
     // 수정 form 이벤트
     handleEdit(i, d){
       if (d){
@@ -170,14 +168,15 @@ export default {
         this.formCreateMode = true;
       }
 
-      this.drawerForm = true;
+      this.openDrawer();
     },
     handleDrawer(close){
       this.$nextTick(() => {
         this.$refs['form'].resetFields();
       });
-      close();
-    }
+      this.closeDrawer();
+      // close();
+    },
   }
 };
 </script>
