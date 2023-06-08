@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>병원 그룹 관리</h1>
     <el-row :gutter="20">
       <el-col :span="12">
         <el-button @click="handleEdit" type="primary">등록</el-button>
@@ -27,10 +28,10 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit('group', scope.row)">관리</el-button>
+              @click="handleEdit('group', scope.row)">그룹</el-button>
             <el-button
               size="mini"
-              @click="handleEdit('group_hospitals', scope.row)">그룹병원 관리</el-button>
+              @click="handleEdit('group_hospitals', scope.row)">그룹병원</el-button>
           </template>
         </el-table-column>
       </el-table>

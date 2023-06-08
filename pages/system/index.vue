@@ -18,11 +18,11 @@
               disable-transitions>{{scope.row.enabled ? '사용' : '미사용'}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="sso_yn" label="Data Source 생성여부" width="150">
+        <el-table-column prop="sso_yn" label="Data Source" width="150">
           <template slot-scope="scope">
             <el-tag
               :type="scope.row.sso_yn ? 'primary' : 'danger'"
-              disable-transitions>{{scope.row.enabled ? '생성' : '생성전'}}</el-tag>
+              disable-transitions>{{scope.row.sso_yn ? '생성' : '생성전'}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
