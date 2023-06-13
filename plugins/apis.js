@@ -23,6 +23,14 @@ const restApis = {
   put_group_hospitals_v1 : {url : mcareServer.admin + '/api/group/hospitals/v1', method : 'PUT', isHeader : false},
   delete_group_hospitals_v1 : {url : mcareServer.admin + '/api/group/hospitals/v1', method : 'DELETE', isHeader : false},
 
+  // 메뉴관리
+  get_menu_v2 : {url : mcareServer.admin + '/api/menus/v2/search?pageable={pageable}&size={size}&page={page}&nameKey={nameKey}&enabled={enabled}&disabled={disabled}', method : 'GET', isHeader : false},
+  post_menu_v2 : {url : mcareServer.admin + '/api/menus/v2', method : 'POST', isHeader : false},
+  put_menu_v2 : {url : mcareServer.admin + '/api/menus/v2/{id}', method : 'PUT', isHeader : false},
+  delete_menu_v2 : {url : mcareServer.admin + '/api/menus/v2/{id}', method : 'DELETE', isHeader : false},
+  // 메뉴명 조회
+  get_message_v2 : {url : mcareServer.admin + '/api/messages/v2', method : 'GET', isHeader : false},
+
   // Redis Cache 
   post_menutrees_initCache_v2 : {url : mcareServer.admin + '/api/menutrees/v2/initCache', method : 'POST', isHeader : true},
   post_config_initCache_v2 : {url : mcareServer.admin + '/api/config/v2/initCache', method : 'POST', isHeader : true},
