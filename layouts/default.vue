@@ -18,3 +18,9 @@ export default{
   components : {menuVue, headerVue}
 }
 </script>
+
+<style>
+.el-row {margin-bottom: 20px;}
+.el-row.last {margin-bottom: 0;}
+.el-form{max-width: 684px;}
+</style>
