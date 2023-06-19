@@ -20,6 +20,7 @@ export default{
 </script>
 
 <style>
+.mb20 {margin-bottom: 20px;}
 .el-row {margin-bottom: 20px;}
 .el-row.last {margin-bottom: 0;}
 .el-form{max-width: 684px;}

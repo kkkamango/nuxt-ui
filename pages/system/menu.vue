@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h1>통합 메뉴 관리</h1>
+    <h1>통합 메뉴 등록</h1>
+    <el-card class="mb20">
+      <div><span>등록된 메뉴의 변경은 병원별 어드민에서 수정/삭제할 수 있습니다.</span></div>
+
+    </el-card>
     <el-row :gutter="20">
       <el-col :span="12">
         <el-button @click="handleEdit('create')" type="primary">등록</el-button>
@@ -13,16 +17,16 @@
         <el-table-column prop="urlKey" label="URL"></el-table-column>
         <el-table-column prop="imgUrlKey" label="이미지 URL"></el-table-column>
         <el-table-column prop="backUrlKey" label="Back URL"></el-table-column>
-        <el-table-column prop="description" label="설명" width="150">
+        <el-table-column prop="description" label="설명" width="150" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="enabled" label="사용여부" width="150">
+        <el-table-column prop="enabled" label="사용여부" width="100">
           <template slot-scope="scope">
             <el-tag
               :type="scope.row.enabled ? 'primary' : 'info'"
               disable-transitions>{{scope.row.enabled ? '사용' : '미사용'}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           fixed="right"
           label="관리"
           width="150">
@@ -34,7 +38,7 @@
                 size="mini" type="danger"
                 @click="handleEdit('delete', scope.row)">삭제</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </el-row>
     <el-row type="flex" justify="center" class="last">
@@ -98,7 +102,7 @@
               <el-input v-model="formData.description" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"></el-input>
             </el-form-item>
             <el-form-item label="사용여부" prop="enabled">
-              <el-switch v-model="formData.enabled"
+              <el-switch v-model="formData.enabled" disabled
                 active-text="사용" inactive-text="미사용">
               </el-switch>
             </el-form-item>
@@ -126,12 +130,14 @@ export default {
       totalElements : 0, // 메뉴 목록 갯수
       formCreateMode : true, // true:등록, false:수정
       formMode : 'create', // 'create': 등록, 'update': 수정, 'delete': 삭제
-      formData : {},
+      formData : {
+        enabled : true // 삭제시 미사용 처리
+      },
       ruleCreate : {
-        // hospitalCd: [{required : true, message: '대상 병원은 필수 입니다.', trigger: 'change'}],
-        // roles: [{required : true, message: '관리자 권한은 필수 입니다.', trigger: 'change'}],
-        // username: [{required : true, message: '계정은 필수 입니다.', trigger: 'blur'}],
-        // fullname: [{required : true, message: '사용자 이름은 필수 입니다.', trigger: 'blur'}],
+        nameKey: [{required : true, message: '메뉴명은 필수 입니다.', trigger: 'change'}],
+        urlKey: [{required : true, message: 'URL은 필수 입니다.', trigger: 'change'}],
+        imgUrlKey: [{required : true, message: '이미지 URL은 필수 입니다.', trigger: 'change'}],
+        backUrlKey: [{required : true, message: 'Back URL은 필수 입니다.', trigger: 'change'}],
       },
     }
   },
@@ -225,7 +231,7 @@ export default {
 
     },
     handleDrawer(close){
-      this.formData = {};
+      this.formData = {enabled : true};
       this.closeDrawer();
       // close();
     },

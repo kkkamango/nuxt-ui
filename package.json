@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "nuxt --dotenv .env.development",
-    "stage": "nuxt --dotenv .env.stage",
     "build": "nuxt build",
+    "generateDev": "nuxt generate --dotenv .env.development",
+    "generateStg": "nuxt generate --dotenv .env.stage",
     "generate": "nuxt generate",
     "start": "nuxt start --dotenv .env.production"
   },

@@ -1,12 +1,13 @@
 <template>
   <div>
     <h1>통합 관리자 관리</h1>
-    <el-row :gutter="20">
-      <el-col :span="12">
+    <el-row>
+      <el-col :span="10">
         <el-form label-width="30%">
           <el-form-item label="대상 병원">
             <el-select v-model="targetHospital" filterable value-key="hospitalCd"
-              no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요.">
+              no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요."
+              @change="setPage(1)">
               <el-option
                 v-for="item in hospitals"
                 :key="item.hospitalCd"
@@ -19,8 +20,11 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="3">
         <el-button @click="handleEdit" type="primary">등록</el-button>
+      </el-col>
+      <el-col :span="6">
+        <el-input v-model="searchName" placeholder="계정 또는 이름" clearable class="search"></el-input>
       </el-col>
     </el-row>
     <!-- 목록 -->
@@ -161,6 +165,7 @@ export default {
   data(){
     return {
       targetHospital : {}, // 대상 병원DB
+      searchName : '', // 검색어(관리자 계정 or 이름)
       adminList : [], // 병원DB별 관리자 계정 목록
       totalElements : 0, // 병원DB별 관리자 계정 목록 갯수
       formCreateMode : true, // true:등록, false:수정
@@ -192,9 +197,12 @@ export default {
       isDrawOpen : 'isDrawOpen',
     }),
   },
-  watch:{
-    targetHospital(value){
-      this.setPage(1, value.hospitalCd);
+  mounted(){
+    document.querySelector('.search').onkeyup = (e) => {
+      if (e.keyCode != 13){
+        return false;
+      }
+      this.setPage(1);
     }
   },
   async fetch(){
@@ -206,14 +214,28 @@ export default {
         this.adminList = response.body && response.body.content || [];
         this.totalElements = response.body.totalElements || 0;
     },
-    setPage(page, hospitalCd){
+    setPage(page){
+      console.debug('setPage', page);
+      if (!this.targetHospital || !this.targetHospital.hospitalCd){
+        this.$message.error('병원을 선택하세요.');
+        return false;
+      }
       this.$noContentTypeAxios(this.$apis.get_admins_search_v3, {
-        hospitalCd : hospitalCd ? hospitalCd : this.targetHospital.hospitalCd,
+        hospitalCd : this.targetHospital.hospitalCd,
         size : 10,
         page : page-1, // 현재 페이지 -1
-        roleTypes : 'ROLE_MCARE%2CROLE_CSADMIN%2CROLE_DEVELOPER%2CROLE_MANAGER'
+        roleTypes : 'ROLE_MCARE%2CROLE_CSADMIN%2CROLE_DEVELOPER%2CROLE_MANAGER',
+        searchName : this.searchName,
       }, this.getAdminList);
     },
+    // search(e){
+    //   console.debug(e);
+    //   if (e.code != 13){
+    //     return false;
+    //   }
+
+    //   this.setPage(1);
+    // },
     createAdmin(){
 
       this.$refs.form.validate((valid) => {
