@@ -2,26 +2,20 @@
   <div>
     <h1>통합 관리자 관리</h1>
     <el-row>
-      <el-col :span="10">
-        <el-select v-model="targetHospital" filterable value-key="hospitalCd"
-          no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요." default-first-option
-          @change="setPage(1)">
-          <el-option
-            v-for="item in hospitalList"
-            :key="item.hospitalCd"
-            :label="item.hospitalNm"
-            :value="item">
-            <span class="fl-l">{{ item.hospitalNm }}</span>
-            <span class="fl-r">{{ item.hospitalCd }}</span>
-          </el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="3">
-        <el-button @click="handleEdit" type="primary">등록</el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-input v-model="searchName" placeholder="계정 또는 이름" clearable class="search"></el-input>
-      </el-col>
+      <el-select v-model="targetHospital" filterable value-key="hospitalCd"
+        no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요." default-first-option
+        @change="setPage(1)">
+        <el-option
+          v-for="item in hospitalList"
+          :key="item.hospitalCd"
+          :label="item.hospitalNm"
+          :value="item">
+          <span class="fl-l">{{ item.hospitalNm }}</span>
+          <span class="fl-r">{{ item.hospitalCd }}</span>
+        </el-option>
+      </el-select>
+      <el-button @click="handleEdit" type="primary">등록</el-button>
+      <el-input v-model="searchName" placeholder="계정 또는 이름" clearable class="search"></el-input>
     </el-row>
     <!-- 목록 -->
     <el-row>

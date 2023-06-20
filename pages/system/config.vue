@@ -2,24 +2,20 @@
   <div>
     <h1>화면(Config) 관리</h1>
     <el-row>
-      <el-col :span="10">
-        <el-select v-model="targetHospital" filterable value-key="hospitalCd"
-          no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요." default-first-option
-          @change="getConfigList">
-          <el-option
-            v-for="item in hospitals"
-            :key="item.hospitalCd"
-            :label="item.hospitalNm"
-            :value="item">
-            <span class="fl-l">{{ item.hospitalNm }}</span>
-            <span class="fl-r">{{ item.hospitalCd }}</span>
-          </el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="10" v-show="targetHospital && targetHospital.hospitalCd">
-        <el-button @click="handleEdit('create')" type="primary">등록</el-button>
-        <el-button @click="initConfig" type="warning" icon="el-icon-refresh" circle=""></el-button>
-      </el-col>
+      <el-select v-model="targetHospital" filterable value-key="hospitalCd"
+        no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요." default-first-option
+        @change="getConfigList">
+        <el-option
+          v-for="item in hospitals"
+          :key="item.hospitalCd"
+          :label="item.hospitalNm"
+          :value="item">
+          <span class="fl-l">{{ item.hospitalNm }}</span>
+          <span class="fl-r">{{ item.hospitalCd }}</span>
+        </el-option>
+      </el-select>
+      <el-button @click="handleEdit('create')" type="primary" v-show="targetHospital && targetHospital.hospitalCd">등록</el-button>
+      <el-button @click="initConfig" type="warning" icon="el-icon-refresh" circle v-show="targetHospital && targetHospital.hospitalCd"></el-button>
     </el-row>
 
     <!-- 목록 -->
