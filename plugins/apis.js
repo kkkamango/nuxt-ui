@@ -39,7 +39,7 @@ const restApis = {
 
   // Redis Cache 
   post_menutrees_initCache_v2 : {url : mcareServer.admin + '/api/menutrees/v2/initCache', method : 'POST', isHeader : true},
-  post_config_initCache_v2 : {url : mcareServer.admin + '/api/config/v2/initCache?hospitalCd={hospitalCd}', method : 'POST', isHeader : false},
+  post_config_initCache_v2 : {url : mcareServer.admin + '/api/config/v2/initCache', method : 'POST', isHeader : false},
   post_alimtalk_initCache : {url : mcareServer.admin + '/api/config/alimtalk/initCache', method : 'POST', isHeader : true},
 
   // 관리자

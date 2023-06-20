@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-cloak>
     <h1>화면(Config) 관리</h1>
     <el-row>
       <el-select v-model="targetHospital" filterable value-key="hospitalCd"
@@ -156,9 +156,27 @@ export default {
       configList : [], // 화면(Config) 목록
       formMode : 'create', // 'create': 등록, 'update': 수정, 'delete': 삭제
       formData : {
+        hospitalCd : '',
+        name : '',
+        prefix : '',
+        description : '',
+        locale : '',
+        address : '',
+        telno : '',
+        displayType : '',
+        displayConfigJs : '',
+        displayTheme : '',
+        locationNaver : '',
+        apiUrl : '',
+        apiKey : '',
+        secretKey : '',
         allowStart : '0900',
         allowEnd : '1800',
+        partnerCode : '',
+        partnerTaxId : '',
+        timeout : '',
         simpleJoinYn : true, 
+        customMainYn : false,
       },
       ruleCreate : {
         hospitalCd: [{required : true, message: '요양기관코드는 필수 입니다.', trigger: 'change'}],
@@ -217,7 +235,7 @@ export default {
         return false;
       }
 
-      this.$noContentTypeAxios(this.$apis.post_config_initCache_v2, {hospitalCd : this.targetHospital.hospitalCd}, (response) => {
+      this.$customAxios(this.$apis.post_config_initCache_v2, {hospitalCd : this.targetHospital.hospitalCd}, (response) => {
         this.$message({
           message: '화면(config) - 캐시를 초기화 하였습니다.',
           type: 'success'
@@ -252,7 +270,7 @@ export default {
         Object.keys(d).forEach(key => {
           this.formData[key] = d[key];
         });
-        console.debug(this.formData)
+        
         this.openDrawer();
 
       } else if (this.formMode == 'delete'){ // 삭제 
