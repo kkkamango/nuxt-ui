@@ -103,7 +103,7 @@ import {mapGetters, mapActions, mapMutations} from 'vuex';
 import GroupHospitalsVue from '../../components/system/groupHospitals.vue';
 
 export default {
-  name : 'groupManageVue',
+  name : 'groupVue',
   data(){
     return {
       formData : {

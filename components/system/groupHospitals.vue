@@ -23,7 +23,7 @@
             
             <el-table-column prop="hospital.hospitalNm" label="병원명">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.hospital" filterable value-key="hospitalCd"
+                <el-select v-model="scope.row.hospital" filterable value-key="hospitalCd" default-first-option
                   v-if="!scope.row.id"
                   no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요.">
                   <el-option

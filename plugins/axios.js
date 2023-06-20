@@ -10,16 +10,16 @@ export default function ({$axios}, inject) {
    */
   const customAxios = (api, param, callback, callbackParam) => {
 
-    const axiosConfig = {
-      method: api['method'] ? api['method'] : 'GET',
-      data: param ? {...param} : {}
-    };
-    
-    if (!api['url']){
+    if (!api || !api['url']){
       console.error('unknown API.');
       $nuxt.$message.error(`unknown API.`);
       return false;
     }
+    
+    const axiosConfig = {
+      method: api['method'] ? api['method'] : 'GET',
+      data: param ? {...param} : {}
+    };
     
     axiosConfig.url = generateUrl(api.url, param);
 
@@ -39,7 +39,7 @@ export default function ({$axios}, inject) {
         callback(response.data, callbackParam);
       }
     }).catch((error) => {
-      $nuxt.$message.error(`${error}`);
+      $nuxt.$message.error(`${error.response && error.response.data ? error.response.data : error}`);
     });
   }
   
@@ -83,7 +83,7 @@ export default function ({$axios}, inject) {
         callback(response.data, callbackParam);
       }
     }).catch((error) => {
-      $nuxt.$message.error(`${error}`);
+      $nuxt.$message.error(`${error.response && error.response.data ? error.response.data : error}`);
     });
   }
 
@@ -120,7 +120,7 @@ export default function ({$axios}, inject) {
             }
           })
           .catch(error => {
-            $nuxt.$message.error(`${error}`);
+            $nuxt.$message.error(`${error.response && error.response.data ? error.response.data : error}`);
           });
     })(requests);
   }
@@ -142,7 +142,7 @@ export default function ({$axios}, inject) {
 
       return url;
     } catch(error) {
-      $nuxt.$message.error(`${error}`);
+      $nuxt.$message.error(`${error.response && error.response.data ? error.response.data : error}`);
     }
 
   }

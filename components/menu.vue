@@ -23,6 +23,7 @@
         </template>
         <el-menu-item index="/system">병원 기본 정보 관리</el-menu-item>
         <el-menu-item index="/system/group">병원 그룹 관리</el-menu-item>
+        <el-menu-item index="/system/config">화면(Config) 관리</el-menu-item>
         <el-menu-item index="/system/menu">통합 메뉴 등록</el-menu-item>
       </el-submenu>
       <el-submenu index="2">

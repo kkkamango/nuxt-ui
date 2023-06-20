@@ -3,22 +3,18 @@
     <h1>통합 관리자 관리</h1>
     <el-row>
       <el-col :span="10">
-        <el-form label-width="30%">
-          <el-form-item label="대상 병원">
-            <el-select v-model="targetHospital" filterable value-key="hospitalCd"
-              no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요."
-              @change="setPage(1)">
-              <el-option
-                v-for="item in hospitals"
-                :key="item.hospitalCd"
-                :label="item.hospitalNm"
-                :value="item">
-                <span class="fl-l">{{ item.hospitalNm }}</span>
-                <span class="fl-r">{{ item.hospitalCd }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
+        <el-select v-model="targetHospital" filterable value-key="hospitalCd"
+          no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요." default-first-option
+          @change="setPage(1)">
+          <el-option
+            v-for="item in hospitalList"
+            :key="item.hospitalCd"
+            :label="item.hospitalNm"
+            :value="item">
+            <span class="fl-l">{{ item.hospitalNm }}</span>
+            <span class="fl-r">{{ item.hospitalCd }}</span>
+          </el-option>
+        </el-select>
       </el-col>
       <el-col :span="3">
         <el-button @click="handleEdit" type="primary">등록</el-button>
@@ -75,9 +71,9 @@
             <el-form-item label="대상 DB" prop="hospitalCd">
               <el-select v-if="formCreateMode" 
                 v-model="formData.hospitalCd" filterable 
-                no-data-text="병원 정보 조회 실패" placeholder="병원을 선택하세요.">
+                no-data-text="병원 정보 조회 실패" placeholder="병원을 선택하세요." default-first-option>
                 <el-option
-                  v-for="item in hospitals"
+                  v-for="item in hospitalList"
                   :key="item.hospitalCd"
                   :label="item.hospitalNm"
                   :value="item.hospitalCd">
@@ -90,7 +86,7 @@
             <el-form-item label="권한" prop="roles">
               <el-select v-model="formData.roles" 
                 value-key="id"
-                multiple filterable placeholder="관리자 권한을 선택하세요.">
+                multiple filterable placeholder="관리자 권한을 선택하세요." default-first-option>
                 <el-option
                   v-for="item in roles"
                   :key="item.id"
@@ -191,6 +187,10 @@ export default {
     }
   },
   computed:{
+    hospitalList(){
+      // 등록시 DB 생성 여부 체크
+      return this.hospitals.filter(d => d.sso_yn);
+    },
     ...mapGetters({
       hospitals : 'getHospitals',
       roles : 'getRoles',
@@ -228,14 +228,6 @@ export default {
         searchName : this.searchName,
       }, this.getAdminList);
     },
-    // search(e){
-    //   console.debug(e);
-    //   if (e.code != 13){
-    //     return false;
-    //   }
-
-    //   this.setPage(1);
-    // },
     createAdmin(){
 
       this.$refs.form.validate((valid) => {

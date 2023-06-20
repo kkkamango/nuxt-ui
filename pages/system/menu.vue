@@ -56,7 +56,7 @@
             
             <el-form-item label="메뉴명" prop="nameKey">
               <el-select v-model="formData.nameKey"
-                filterable placeholder="선택하세요.">
+                filterable placeholder="선택하세요." default-first-option>
                 <el-option
                   v-for="item in menuMessageList"
                   :key="item.menu"
@@ -67,7 +67,7 @@
             </el-form-item>
             <el-form-item label="URL" prop="urlKey">
               <el-select v-model="formData.urlKey"
-                filterable placeholder="선택하세요.">
+                filterable placeholder="선택하세요." default-first-option>
                 <el-option
                   v-for="item in menuMessageList"
                   :key="item.menu_url"
@@ -78,7 +78,7 @@
             </el-form-item>
             <el-form-item label="이미지 URL" prop="imgUrlKey">
               <el-select v-model="formData.imgUrlKey"
-                filterable placeholder="선택하세요.">
+                filterable placeholder="선택하세요." default-first-option>
                 <el-option
                   v-for="item in menuMessageList"
                   :key="item.menu_imgUrl"
@@ -89,7 +89,7 @@
             </el-form-item>
             <el-form-item label="Back URL" prop="backUrlKey">
               <el-select v-model="formData.backUrlKey"
-                filterable placeholder="선택하세요.">
+                filterable placeholder="선택하세요." default-first-option>
                 <el-option
                   v-for="item in menuMessageList"
                   :key="item.menu_backUrl"
@@ -232,6 +232,9 @@ export default {
     },
     handleDrawer(close){
       this.formData = {enabled : true};
+      this.$nextTick(() => {
+        this.$refs['form'].resetFields();
+      });
       this.closeDrawer();
       // close();
     },

@@ -23,7 +23,13 @@ const restApis = {
   put_group_hospitals_v1 : {url : mcareServer.admin + '/api/group/hospitals/v1', method : 'PUT', isHeader : false},
   delete_group_hospitals_v1 : {url : mcareServer.admin + '/api/group/hospitals/v1', method : 'DELETE', isHeader : false},
 
-  // 메뉴관리
+  // 화면(Config)
+  get_config_v1 : {url : mcareServer.admin + '/api/config/v1/{hospitalCd}', method : 'GET', isHeader : false},
+  post_config_v1 : {url : mcareServer.admin + '/api/config/v1', method : 'POST', isHeader : false},
+  put_config_v1 : {url : mcareServer.admin + '/api/config/v1/{seq}', method : 'PUT', isHeader : false},
+  delete_config_v1 : {url : mcareServer.admin + '/api/config/v1/{seq}', method : 'DELETE', isHeader : false},
+  
+  // 메뉴
   get_menu_v2 : {url : mcareServer.admin + '/api/menus/v2/search?pageable={pageable}&size={size}&page={page}&nameKey={nameKey}&enabled={enabled}&disabled={disabled}', method : 'GET', isHeader : false},
   post_menu_v2 : {url : mcareServer.admin + '/api/menus/v2', method : 'POST', isHeader : false},
   put_menu_v2 : {url : mcareServer.admin + '/api/menus/v2/{id}', method : 'PUT', isHeader : false},
@@ -33,7 +39,7 @@ const restApis = {
 
   // Redis Cache 
   post_menutrees_initCache_v2 : {url : mcareServer.admin + '/api/menutrees/v2/initCache', method : 'POST', isHeader : true},
-  post_config_initCache_v2 : {url : mcareServer.admin + '/api/config/v2/initCache', method : 'POST', isHeader : true},
+  post_config_initCache_v2 : {url : mcareServer.admin + '/api/config/v2/initCache?hospitalCd={hospitalCd}', method : 'POST', isHeader : false},
   post_alimtalk_initCache : {url : mcareServer.admin + '/api/config/alimtalk/initCache', method : 'POST', isHeader : true},
 
   // 관리자

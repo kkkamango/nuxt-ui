@@ -94,7 +94,7 @@
 import {mapGetters, mapActions} from 'vuex';
 
 export default {
-  name : 'hospitalManageVue',
+  name : 'hospitalVue',
   data(){
     return {
       formCreateMode : true, // true:등록, false:수정

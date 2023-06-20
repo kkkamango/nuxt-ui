@@ -4,23 +4,18 @@
 
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-form label-width="30%">
-          <el-form-item label="대상 병원">
-            <el-select v-model="targetHospital" filterable multiple value-key="hospitalCd"
-              no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요.">
-              <el-option
-                v-for="item in hospitalList"
-                :key="item.hospitalCd"
-                :label="item.hospitalNm"
-                :value="item">
-                <span class="fl-l">{{ item.hospitalNm }}</span>
-                <span class="fl-r">{{ item.hospitalCd }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
+        <el-select v-model="targetHospital" filterable multiple value-key="hospitalCd"
+          no-data-text="병원 정보 조회 실패" placeholder="대상 병원을 선택하세요." default-first-option>
+          <el-option
+            v-for="item in hospitalList"
+            :key="item.hospitalCd"
+            :label="item.hospitalNm"
+            :value="item">
+            <span class="fl-l">{{ item.hospitalNm }}</span>
+            <span class="fl-r">{{ item.hospitalCd }}</span>
+          </el-option>
+        </el-select>
       </el-col>
-
     </el-row>
 
     <el-row class="last">
