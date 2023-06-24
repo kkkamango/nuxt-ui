@@ -58,7 +58,7 @@
     </el-row>
 
     <el-drawer :title="formCreateMode ? '통합 관리자 등록' : '통합 관리자 수정'" 
-        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%" :wrapperClosable="false">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">
@@ -209,7 +209,6 @@ export default {
         this.totalElements = response.body.totalElements || 0;
     },
     setPage(page){
-      console.debug('setPage', page);
       if (!this.targetHospital || !this.targetHospital.hospitalCd){
         this.$message.error('병원을 선택하세요.');
         return false;

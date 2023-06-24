@@ -43,7 +43,7 @@
     </el-row>
 
     <el-drawer :title="formCreateMode ? '병원 기본 정보 등록' : '병원 기본 정보 수정'" 
-        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%" :wrapperClosable="false">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">

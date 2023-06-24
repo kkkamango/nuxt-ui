@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-drawer :title="`그룹병원 관리`" 
-        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="70%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="70%" :wrapperClosable="false">
 
       <el-container>
         <el-main>

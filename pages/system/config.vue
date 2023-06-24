@@ -49,7 +49,7 @@
     </el-row>
 
     <el-drawer :title="this.formMode == 'create' ? '화면(Config) 등록' : '화면(Config) 수정'" 
-        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%" :wrapperClosable="false">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">

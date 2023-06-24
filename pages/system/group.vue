@@ -41,7 +41,7 @@
     <!-- 그룹관리 -->
     <el-drawer v-if="manageMode == 'group'"
         :title="formCreateMode ? '그룹 등록' : '그룹 수정'" 
-        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%">
+        :visible.sync="isDrawOpen" direction="rtl" :before-close="handleDrawer" size="50%" :wrapperClosable="false">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-form :model="formData" :rules="ruleCreate" ref="form" label-width="30%">

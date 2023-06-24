@@ -95,7 +95,7 @@ export default function ({$axios}, inject) {
    * @param {*} callbackParam 
    * @returns 
    */
-  const customHeaderAxiosAll = (api, param, callback, callbackParam) => {
+  const customAxiosAll = (api, param, callback, callbackParam) => {
     
     if (!api['url'] || !Array.isArray(param) || !param.every( d => d.hospitalCd)){
       console.error('Bad Request.');
@@ -103,7 +103,7 @@ export default function ({$axios}, inject) {
     }
 
     const requests = param.map(d => $axios({
-        headers: { 'hospitalCd': d.hospitalCd },
+        headers: { 'hospitalCd': api['isHeader'] ? d.hospitalCd : '' },
         method: api['method'] ? api['method'] : 'GET',
         url: api.url,
         data: {...d}
@@ -149,5 +149,5 @@ export default function ({$axios}, inject) {
 
   inject('customAxios', customAxios);
   inject('noContentTypeAxios', noContentTypeAxios);
-  inject('customHeaderAxiosAll', customHeaderAxiosAll);
+  inject('customAxiosAll', customAxiosAll);
 }

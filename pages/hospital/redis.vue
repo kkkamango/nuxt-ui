@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     initMenuTree(){
-      this.$customHeaderAxiosAll(this.$apis.post_menutrees_initCache_v2, this.requestParam, (response) => {
+      this.$customAxiosAll(this.$apis.post_menutrees_initCache_v2, this.requestParam, (response) => {
         // console.log('initMenuTree', response);
         this.$message({
           message: '메뉴트리 - 캐시를 초기화 하였습니다.',
@@ -63,7 +63,7 @@ export default {
       });
     },
     initConfig(){
-      this.$customHeaderAxiosAll(this.$apis.post_config_initCache_v2, this.requestParam, (response) => {
+      this.$customAxiosAll(this.$apis.post_config_initCache_v2, this.requestParam, (response) => {
         // console.log('initConfig', response);
         this.$message({
           message: '화면(config) - 캐시를 초기화 하였습니다.',
@@ -72,7 +72,7 @@ export default {
       });
     },
     initAlimtalk(){
-      this.$customHeaderAxiosAll(this.$apis.post_alimtalk_initCache, this.requestParam, (response) => {
+      this.$customAxiosAll(this.$apis.post_alimtalk_initCache, this.requestParam, (response) => {
         // console.log('initAlimtalk', response);
         this.$message({
           message: '알림톡 설정 - 캐시를 초기화 하였습니다.',
